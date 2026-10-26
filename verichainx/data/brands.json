@@ -99,10 +99,16 @@
           "counterfeit_tells": ["irregular stitching, glue marks"]
         },
         {
-          "name": "packaging",
-          "sam_prompt": "box or dust bag",
+          "name": "packaging box",
+          "sam_prompt": "box",
           "authentic_traits": ["branded packaging consistent with the brand"],
           "counterfeit_tells": ["generic packaging"]
+        },
+        {
+          "name": "dust bag",
+          "sam_prompt": "dust bag",
+          "authentic_traits": ["branded dust bag consistent with the brand"],
+          "counterfeit_tells": ["generic or unbranded dust bag"]
         }
       ]
     }

@@ -73,6 +73,7 @@ class ProductVerification(BaseModel):
     evidence: list[EvidenceRegion]
     engine: str = Field(description="'meta' for live Muse Spark + SAM 3.1, 'mock' for the offline engine")
     models: dict[str, str]
+    fallback_used: bool = Field(False, description="True when Muse Spark's output was not used and the result is rule-based")
 
 
 class RiskSignal(BaseModel):
@@ -95,6 +96,7 @@ class SellerRisk(BaseModel):
     signals: list[RiskSignal]
     engine: str
     models: dict[str, str]
+    fallback_used: bool = Field(False, description="True when Muse Spark's output was not used and the score is rule-based")
 
 
 class VerifyProductRequest(BaseModel):

@@ -76,6 +76,8 @@ function card(result) {
           <div class="value">${risk.risk_score}<span class="muted">/100</span></div>
           <div class="bar"><span style="width:${risk.risk_score}%;background:${scoreColor(risk.risk_score, true)}"></span></div></div>
       </div>
+      ${product.engine === "meta" && (product.fallback_used || risk.fallback_used)
+        ? `<p><span class="tag mock">Rule-based fallback: Muse Spark output unavailable for this ${product.fallback_used ? "verification" : "seller check"}</span></p>` : ""}
       <h3>Evidence</h3>
       <p style="margin:0 0 6px">${esc(product.summary)}</p>
       <ul class="findings">${findings}</ul>

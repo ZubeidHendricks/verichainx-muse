@@ -172,6 +172,7 @@ async def issue_verification_record(
             "findings_sha256": hashlib.sha256(canonical_json(product["findings"]).encode()).hexdigest(),
             "engine": product["engine"],
             "models": product["models"],
+            "fallback_used": product.get("fallback_used", False),
         },
         "seller": None if not seller else {
             "assessment_id": seller["assessment_id"],
@@ -180,6 +181,7 @@ async def issue_verification_record(
             "risk_level": seller["risk_level"],
             "signals": {s["name"]: s["weight"] for s in seller["signals"]},
             "engine": seller["engine"],
+            "fallback_used": seller.get("fallback_used", False),
         },
     }
     digest = record_hash(record)

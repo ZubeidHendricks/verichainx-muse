@@ -216,7 +216,7 @@ async def verify_product(listing: Listing, engine: Engine, store: Store, setting
     region_models = [r for r, _ in regions]
     fallback = _rule_based(listing, ref, region_models, settings)
 
-    raw = await engine.reason_json(
+    raw, fallback_used = await engine.reason_json(
         "verify",
         DEVELOPER_PROMPT,
         _build_content(listing, ref, images, regions, settings),
@@ -235,6 +235,7 @@ async def verify_product(listing: Listing, engine: Engine, store: Store, setting
         evidence=region_models,
         engine=engine.name,
         models={"reasoning": engine.models["verify"], "segmentation": engine.models["segmentation"]},
+        fallback_used=fallback_used,
         **result,
     )
     store.save_assessment(

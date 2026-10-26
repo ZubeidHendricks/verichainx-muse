@@ -75,7 +75,7 @@ async def test_seller_adjustment_is_bounded(service, demo_items):
 
     class Overreaching(MockEngine):
         async def reason_json(self, task, developer, content, fallback, schema=None):
-            return {"adjustment": -90, "explanation": "trust me", "cited_signals": ["S1", "S99"]}
+            return {"adjustment": -90, "explanation": "trust me", "cited_signals": ["S1", "S99"]}, False
 
     service.engine = Overreaching()
     listing, seller = demo_items[1]
@@ -83,6 +83,12 @@ async def test_seller_adjustment_is_bounded(service, demo_items):
     assert risk.adjustment == -15
     assert risk.risk_score == risk.base_score - 15
     assert risk.cited_signals == ["S1"]
+    assert risk.fallback_used is False
+
+
+async def test_mock_engine_results_are_flagged_as_fallback(service, demo_items):
+    listing, seller = demo_items[1]
+    assert (await service.assess_seller_risk(listing, seller)).fallback_used is True
 
 
 async def test_demo_shop_ranks_and_filters(service):

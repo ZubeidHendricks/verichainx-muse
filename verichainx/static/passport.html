@@ -52,7 +52,7 @@ document.getElementById("key").textContent = key;
           <dt>Record</dt><dd class="mono">${esc(r.record_id)}</dd>
           <dt>SHA-256</dt><dd class="mono">${esc(c.record_hash)}</dd>
           <dt>On Hedera</dt><dd>${chain}</dd>
-          <dt>Models</dt><dd class="mono">${esc(Object.values(p.models).join(" + "))} (${esc(p.engine)})</dd>
+          <dt>Models</dt><dd class="mono">${esc(Object.values(p.models).join(" + "))} (${esc(p.engine)}${p.fallback_used ? ", rule-based fallback" : ""})</dd>
         </dl>
       </div></article>`;
   }).join("");

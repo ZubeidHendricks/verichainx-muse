@@ -129,7 +129,7 @@ async def assess_seller_risk(
         "signals": [s.model_dump() for s in signals],
         "base_score": base,
     }
-    raw = await engine.reason_json(
+    raw, fallback_used = await engine.reason_json(
         "seller", DEVELOPER_PROMPT, [{"type": "text", "text": json.dumps(payload, indent=1)}], fallback=lambda: fallback,
         schema=OUTPUT_SCHEMA,
     )
@@ -155,6 +155,7 @@ async def assess_seller_risk(
         signals=signals,
         engine=engine.name,
         models={"reasoning": engine.models["seller"]},
+        fallback_used=fallback_used,
     )
     store.save_assessment(risk.assessment_id, "seller", risk.model_dump())
     return risk

@@ -69,6 +69,7 @@ uv run pytest
 - Brand reference data in `data/brands.json` is a demo set of general cues, not verified brand criteria.
 - `product_key` groups records by listing. Reading a serial or date code from the evidence would make
   passports follow the item across resales.
-- Not yet run against the live Meta Model API. Calls follow the documented request shapes (`json_schema`
-  structured output, Responses API for SAM 3.1). If the API rejects `response_format`, the engine retries
-  with free-text JSON extraction, and if a Muse Spark call fails it falls back to the rule-based result.
+- The demo photos are flat placeholder drawings, so SAM 3.1 finds no evidence regions in them and verdicts
+  come back inconclusive. Replace them with real photos, including close-ups of each reference feature.
+- If a Muse Spark call fails or its reply can't be parsed, the result is rule-based and the assessment sets
+  `fallback_used: true`. The web demo and passport page show this, and it is part of the anchored record.

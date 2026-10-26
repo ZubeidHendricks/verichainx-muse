@@ -1,7 +1,8 @@
 """Model engines: live Meta Model API (Muse Spark + SAM 3.1) or a deterministic offline mock.
 
 Callers pass a `fallback` producing the rule-based result. The mock engine returns it
-directly; the Meta engine uses it only if Muse Spark's reply cannot be parsed.
+directly; the Meta engine uses it only if the Muse Spark call fails or its reply cannot be
+parsed. reason_json returns (result, fallback_used) so assessments can say which happened.
 """
 
 import asyncio
@@ -32,7 +33,7 @@ class Engine(Protocol):
     async def reason_json(
         self, task: str, developer: str, content: list[dict[str, Any]], fallback: Callable[[], dict],
         schema: dict | None = None,
-    ) -> dict: ...
+    ) -> tuple[dict, bool]: ...
 
 
 def extract_json(text: str) -> dict | None:
@@ -108,12 +109,12 @@ class MetaEngine:
                 resp = await self.client.chat.completions.create(**kwargs)
         except APIError as exc:  # timeouts, rate limits, 5xx: degrade to rules instead of failing the call
             log.warning("Muse Spark call failed (%s); using rule-based fallback", exc)
-            return fallback()
+            return fallback(), True
         parsed = extract_json(resp.choices[0].message.content or "")
         if parsed is None:
             log.warning("Muse Spark returned non-JSON output; using rule-based fallback")
-            return fallback()
-        return parsed
+            return fallback(), True
+        return parsed, False
 
 
 class MockEngine:
@@ -132,7 +133,7 @@ class MockEngine:
         return f"<0f>0<|box;x1={x1};y1={y1};x2={x1 + bw};y2={y1 + bh};w={w};h={h}|><|mask;x=0;y=0;data=1,1,!00000|>"
 
     async def reason_json(self, task, developer, content, fallback, schema=None):
-        return fallback()
+        return fallback(), True
 
 
 def build_engine(settings: Settings) -> Engine:
